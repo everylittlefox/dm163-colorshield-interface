@@ -3,7 +3,7 @@ module pixels_grid (input clk,
                      input write_en,
                      input wire [5:0] pixel_addr,
                      input wire [BITS_PER_PIXEL-1:0] pixel_value,
-                     input [2:0] col_idx,
+                     input [2:0] read_col_idx,
                      output [N_BITS-1:0] col_bits);
 
   localparam PIXELS_PER_COL = 8;
@@ -16,7 +16,7 @@ module pixels_grid (input clk,
   reg [N_BITS-1:0] pixels [N_COLS-1:0];
   
   assign {x_coord, y_coord} = pixel_addr;
-  assign col_bits = pixels[col_idx];
+  assign col_bits = pixels[read_col_idx];
 
   always @(posedge clk, negedge rst_n) begin
     if (~rst_n) begin
