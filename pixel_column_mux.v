@@ -24,6 +24,8 @@ module pixel_column_mux(input clk,
 
   wire col_done;
   wire l_write_en, r_write_en;
+  reg clear;
+  wire l_clear, r_clear;
   wire [N_BITS-1:0] col_bits, l_col_bits, r_col_bits;
   
   reg [1:0] state, state_next;
@@ -39,6 +41,7 @@ module pixel_column_mux(input clk,
   pixels_grid left_grid  (.clk(clk),
                           .rst_n(rst_n),
                           .write_en(l_write_en),
+                          .clear(l_clear),
                           .pixel_addr(pixel_addr),
                           .pixel_value(pixel_value),
                           .read_col_idx(col_idx),
@@ -47,6 +50,7 @@ module pixel_column_mux(input clk,
   pixels_grid right_grid (.clk(clk),
                           .rst_n(rst_n),
                           .write_en(r_write_en),
+                          .clear(r_clear),
                           .pixel_addr(pixel_addr),
                           .pixel_value(pixel_value),
                           .read_col_idx(col_idx),
@@ -59,10 +63,14 @@ module pixel_column_mux(input clk,
                                     .s_clk(s_clk),
                                     .s_sda(s_sda),
                                     .latch(latch));
-
-  assign col_done = ~latch;                     
+                     
   assign l_write_en = (active == LEFT) ? 1'b0 : write_en;
   assign r_write_en = (active == RIGHT) ? 1'b0 : write_en;
+
+  assign l_clear = (active == LEFT) ? clear : 1'b0;
+  assign r_clear = (active == RIGHT) ? clear : 1'b0;
+
+  assign col_done = ~latch;
   assign col_bits = (active == LEFT) ? l_col_bits : r_col_bits;
 
   always @(posedge clk, negedge rst_n) begin
@@ -92,6 +100,7 @@ module pixel_column_mux(input clk,
     n_cycles_next = n_cycles;
     channel_next = 0;
     ready = 1'b0;
+    clear = 1'b0;
     
     case (state)
       READY: begin
@@ -108,6 +117,7 @@ module pixel_column_mux(input clk,
         end
       end
       SWAP: begin
+        clear = 1'b1;
         transmit_next = 1'b1;
         active_next = ~active;
         state_next = READY;

@@ -1,6 +1,7 @@
 module pixels_grid (input clk,
                      input rst_n,
                      input write_en,
+                     input clear,
                      input wire [5:0] pixel_addr,
                      input wire [BITS_PER_PIXEL-1:0] pixel_value,
                      input [2:0] read_col_idx,
@@ -25,6 +26,10 @@ module pixels_grid (input clk,
       end
     end else if (write_en) begin
       pixels[x_coord][y_coord * BITS_PER_PIXEL +: BITS_PER_PIXEL] <= pixel_value;
+    end else if (clear) begin
+      for (i = 0; i < N_COLS; i = i + 1) begin: clear_for
+        pixels[i] <= {PIXELS_PER_COL{24'h000000}};
+      end
     end
   end
 endmodule

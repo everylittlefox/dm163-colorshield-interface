@@ -18,6 +18,11 @@ int main(int argc, char* argv[]) {
     unsigned tick_count = 0;
     pixel_column_mux->rst_n = 0;
     for (int k = 0; k < (1 << 14); k++) {
+        pixel_column_mux->pixel_addr = 0b000000;
+        pixel_column_mux->pixel_value = 0x000000;
+        pixel_column_mux->write_en = 0;
+        pixel_column_mux->send_frame = 0;
+
         if (k > 5) {
             pixel_column_mux->rst_n = 1;
         }
@@ -30,11 +35,12 @@ int main(int argc, char* argv[]) {
             pixel_column_mux->pixel_addr = 0b000000;
             pixel_column_mux->pixel_value = 0x00ff00;
             pixel_column_mux->write_en = 1;
-        } else if (k == 25) {
+        } else if (k == 25 || k == 40) {
             pixel_column_mux->send_frame = 1;
-        } else {
-            pixel_column_mux->write_en = 0;
-            pixel_column_mux->send_frame = 0;
+        } else if (k == 30) {
+            pixel_column_mux->pixel_addr = 0b000100;
+            pixel_column_mux->pixel_value = 0x00ff00;
+            pixel_column_mux->write_en = 1;
         }
 
         tick(tVcd, pixel_column_mux, tick_count);
