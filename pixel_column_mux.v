@@ -8,7 +8,7 @@ module pixel_column_mux(input clk,
                         output s_sda,
                         output s_clk,
                         output latch,
-                        output reg ready);
+                        output reg frame_done);
 
   localparam PIXELS_PER_COL = 8;
   localparam BITS_PER_PIXEL = 24;
@@ -99,14 +99,14 @@ module pixel_column_mux(input clk,
     col_idx_next = col_idx;
     n_cycles_next = n_cycles;
     channel_next = 0;
-    ready = 1'b0;
+    frame_done = 1'b0;
     clear = 1'b0;
     
     case (state)
       READY: begin
-        ready = 1'b1;
-
-        if (ready & send_frame) begin
+        transmit_next = 1'b1;
+        
+        if (send_frame) begin
           state_next = SWAP;
         end
 
@@ -118,7 +118,6 @@ module pixel_column_mux(input clk,
       end
       SWAP: begin
         clear = 1'b1;
-        transmit_next = 1'b1;
         active_next = ~active;
         state_next = READY;
       end
@@ -139,6 +138,8 @@ module pixel_column_mux(input clk,
           state_next = READY;
           transmit_next = 1'b1;
           col_idx_next = col_idx + 1;
+
+          if (col_idx == 3'd7) frame_done = 1'b1;
         end
       end
       default: state_next = READY;

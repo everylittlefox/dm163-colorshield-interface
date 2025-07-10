@@ -17,7 +17,7 @@ int main(int argc, char* argv[]) {
 
     unsigned tick_count = 0;
     top_level->rst_n = 0;
-    for (int k = 0; k < (1 << 16); k++) {
+    for (int k = 0; k < (1 << 18); k++) {
         if (k > 5) {
             top_level->rst_n = 1;
         }
