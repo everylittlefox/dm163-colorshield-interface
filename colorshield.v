@@ -13,10 +13,11 @@ module colorshield (input clk,
 
   localparam [3:0] N_RST_INPUT = 8;
   localparam N_GAMMA = 6 * 24; // 24 channels * 6 bits per channel
+  localparam W = 18; // 2^W is the number of cycles to wait before next paint
 
-  localparam [5:0] RED_GAMMA = 14;
+  localparam [5:0] RED_GAMMA = 63;
   localparam [5:0] GREEN_GAMMA = 63;
-  localparam [5:0] BLUE_GAMMA = 59;
+  localparam [5:0] BLUE_GAMMA = 63;
 
   localparam PAINT = 1'b0;
   localparam INPUT = 1'b1;
@@ -38,7 +39,7 @@ module colorshield (input clk,
   wire p_frame_done;
 
   reg state, state_next;
-  reg [9:0] frame_wait, frame_wait_next;
+  reg [W-1:0] frame_wait, frame_wait_next;
   wire write_en_int;
   reg send_frame;
 
@@ -100,7 +101,7 @@ module colorshield (input clk,
         ready = 1'b0;
 
         if (p_frame_done) begin
-          frame_wait_next = {10{1'b1}};
+          frame_wait_next = {W{1'b1}};
           state_next = INPUT;
         end
       end

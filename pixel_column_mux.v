@@ -32,7 +32,7 @@ module pixel_column_mux(input clk,
   reg [2:0] col_idx, col_idx_next;
   reg active, active_next;
   reg transmit, transmit_next;
-  reg [11:0] n_cycles, n_cycles_next;
+  reg [3:0] n_cycles, n_cycles_next;
   wire [7:0] col_idx_ohot;
   reg [7:0] channel_int, channel_next;
 
@@ -112,7 +112,7 @@ module pixel_column_mux(input clk,
 
         if (col_done) begin
           transmit_next = 1'b0;
-          n_cycles_next = 12'hfff;
+          n_cycles_next = 4'hf;
           state_next = WAITLO;
         end
       end
@@ -125,7 +125,7 @@ module pixel_column_mux(input clk,
         if (n_cycles > 0) begin
           n_cycles_next = n_cycles - 1;
         end else begin
-          n_cycles_next = 12'hfff;
+          n_cycles_next = 4'hf;
           state_next = WAITHI;
         end
       end
