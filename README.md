@@ -4,7 +4,5 @@ herein lies a verilog implementation of an interface between your module and the
 
 ## examples
 
-Single pixel moving in one direction:
-
-Single pixel moved by pushing buttons:
-![](https://github.com/everylittlefox/dm163-colorshield-interface/blob/main/interactive-pixel.mp4)
+- ![Single pixel moving in one direction](https://github.com/everylittlefox/dm163-colorshield-interface/blob/main/moving-pixel.mp4)
+- ![Single pixel moved by pushing buttons](https://github.com/everylittlefox/dm163-colorshield-interface/blob/main/interactive-pixel.mp4)
